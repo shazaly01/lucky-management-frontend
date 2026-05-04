@@ -97,6 +97,7 @@
               <img
                 :src="guest.image_url || guest.client?.image_url || '/default-avatar.png'"
                 class="relative w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-[3px] border-[#020617] z-10 bg-[#020617]"
+                @error="(e) => (e.target.src = '/Empty.jpg')"
               />
             </div>
 

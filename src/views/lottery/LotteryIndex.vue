@@ -33,7 +33,7 @@
         <template #cell-client="{ item }">
           <div class="flex items-center gap-3">
             <img
-              :src="item.client?.image_url || '/default-avatar.png'"
+              :src="item.client?.image_url || '/Empty.jpg'"
               class="w-10 h-10 rounded-full object-cover border border-surface-border"
             />
             <div class="flex flex-col">

@@ -5,7 +5,7 @@
       <template #cell-image_url="{ item }">
         <div class="flex items-center justify-center">
           <img
-            :src="item.image_url || '/default-avatar.png'"
+            :src="item.image_url || '/Empty.jpg'"
             class="w-10 h-10 rounded-full object-cover border border-surface-border"
             alt="صورة النزيل"
           />

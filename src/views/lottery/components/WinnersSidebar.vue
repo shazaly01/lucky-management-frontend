@@ -19,7 +19,7 @@
           class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors"
         >
           <img
-            :src="draw.client?.image_url || '/default-avatar.png'"
+            :src="draw.client?.image_url || '/Empty.jpg'"
             class="w-10 h-10 rounded-full border border-gold-500/30 object-cover"
           />
           <div class="overflow-hidden">

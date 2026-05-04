@@ -34,8 +34,9 @@
           <div class="absolute inset-0 rounded-full bg-gold-500 animate-ping opacity-20"></div>
           <!-- استخدام displayData لضمان الوصول للعميل سواء مررت سجل السحب أو سجل العميل مباشرة -->
           <img
-            :src="displayData.image_url || '/default-avatar.png'"
+            :src="displayData.image_url || '/dEmpty.jpg'"
             class="relative w-48 h-48 rounded-full border-8 border-slate-800 shadow-2xl object-cover z-10"
+            @error="(e) => (e.target.src = '/Empty.jpg')"
           />
         </div>
 
