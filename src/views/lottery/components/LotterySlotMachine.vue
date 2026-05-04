@@ -154,7 +154,7 @@ const itemHeight = 100
 
 const prepareReel = () => {
   // نأخذ عينة من النزلاء
-  const pool = [...(clientStore.clients || [])].sort(() => 0.5 - Math.random()).slice(0, 20)
+  const pool = [...(clientStore.clients || [])].sort(() => 0.5 - Math.random()).slice(0, 100)
   let longList = []
 
   if (pool.length > 0) {
