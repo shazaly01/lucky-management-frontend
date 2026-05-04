@@ -24,7 +24,7 @@
           <div class="text-center mb-8">
             <!-- [مُعدَّل] استخدم شعار مشروعك وعنوانه -->
             <img src="/MainLogo.png" alt="Project Logo" class="logo-main mx-auto mb-4" />
-            <h1 class="text-4xl font-bold text-white tracking-wider">المساعدات</h1>
+            <h1 class="text-4xl font-bold text-white tracking-wider">السابقات</h1>
             <p class="mt-2 text-slate-300 opacity-80 text-lg"></p>
           </div>
 
