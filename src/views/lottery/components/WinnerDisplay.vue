@@ -1,12 +1,13 @@
+<!--src\views\lottery\components\WinnerDisplay.vue-->
 <template>
-  <!-- تعديل: إضافة v-if="winner" للعنصر الداخلي لإرضاء ESLint وتفعيل الأنيميشن -->
   <Transition
     enter-active-class="transition duration-500 ease-out"
     enter-from-class="opacity-0 scale-50"
     enter-to-class="opacity-100 scale-100"
   >
+    <!-- v-if="displayData" تضمن عدم محاولة رندر المكون قبل وصول البيانات -->
     <div
-      v-if="winner"
+      v-if="displayData"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md"
     >
       <!-- تأثير الهالة الضوئية -->
@@ -31,8 +32,9 @@
 
         <div class="relative inline-block mt-8">
           <div class="absolute inset-0 rounded-full bg-gold-500 animate-ping opacity-20"></div>
+          <!-- استخدام displayData لضمان الوصول للعميل سواء مررت سجل السحب أو سجل العميل مباشرة -->
           <img
-            :src="winner?.image_url || '/default-avatar.png'"
+            :src="displayData.image_url || '/default-avatar.png'"
             class="relative w-48 h-48 rounded-full border-8 border-slate-800 shadow-2xl object-cover z-10"
           />
         </div>
@@ -40,10 +42,10 @@
         <div class="mt-8 space-y-2">
           <h3 class="text-gold-500 font-bold uppercase tracking-[0.3em] text-sm">مبروك للفائز</h3>
           <h2 class="text-4xl font-black text-white leading-tight">
-            {{ winner?.name }}
+            {{ displayData.name }}
           </h2>
           <p class="text-2xl font-mono text-slate-400 mt-2">
-            {{ formatPhone(winner?.phone) }}
+            {{ formatPhone(displayData.phone) }}
           </p>
         </div>
 
@@ -62,7 +64,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import confetti from 'canvas-confetti'
 import AppButton from '@/components/ui/AppButton.vue'
 
@@ -75,14 +77,25 @@ const props = defineProps({
 
 defineEmits(['close'])
 
+/**
+ * دالة ذكية لاستخراج بيانات العميل (Display Data)
+ * سواء كان الكائن الممرر هو LotteryDraw أو Client مباشرة
+ */
+const displayData = computed(() => {
+  if (!props.winner) return null
+  // إذا كان الكائن يحتوي على مفتاح client (بنية الـ API الحالية) نستخدمه، وإلا نستخدم الكائن نفسه
+  return props.winner.client ? props.winner.client : props.winner
+})
+
 const formatPhone = (phone) => {
   if (!phone) return '***'
   const p = String(phone)
+  // تحسين بسيط للمقاسات السودانية مثلاً (تعديل حسب طول الرقم لديكم)
   return p.length > 6 ? `${p.substring(0, 4)}****${p.substring(p.length - 2)}` : p
 }
 
 onMounted(() => {
-  // كود الـ Confetti يبقى كما هو
+  // تشغيل الاحتفال فور الظهور
   const duration = 3 * 1000
   const animationEnd = Date.now() + duration
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 }

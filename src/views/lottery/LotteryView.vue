@@ -1,44 +1,53 @@
+<!--src\views\lottery\LotteryView.vue-->
 <template>
   <div class="relative min-h-screen bg-slate-950 text-white overflow-hidden font-sans">
-    <!-- قطعة الليغو 1: الخلفية المتحركة -->
+    <!-- قطعة الليغو 1: الخلفية المتحركة (التي تحتوي على الشعار) -->
     <LotteryBackground />
 
-    <!-- الرأس: شعار الفندق أو عنوان الفعالية -->
-    <header class="relative z-10 pt-10 text-center">
-      <h1
-        class="text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600 uppercase"
-      >
-        Grand Hotel Lottery
-      </h1>
-      <p class="text-slate-400 mt-2 text-lg">سحب عشوائي على جوائز قيمة لنزلاء الفندق</p>
-    </header>
-
-    <main class="relative z-10 container mx-auto px-4 mt-12 flex flex-col items-center">
-      <!-- قطعة الليغو 2: محرك الروليت (الرأس النابض) -->
+    <!-- تعديل: زيادة المسافة العلوية mt-[320px] لضمان عدم تغطية الماكينة للشعار نهائياً -->
+    <main class="relative z-10 container mx-auto px-4 mt-[320px] flex flex-col items-center">
+      <!-- قطعة الليغو 2: محرك الروليت الليزري -->
       <LotterySlotMachine
         ref="slotMachine"
         :is-drawing="isDrawing"
-        :winner-id="winner?.client_id"
+        :winner="winner"
         @animation-complete="handleAnimationComplete"
       />
 
-      <!-- أزرار التحكم (تظهر بجمالية عالية) -->
-      <div class="mt-16">
+      <!-- النص الوصفي (زجاجي أنيق) -->
+      <div
+        class="mt-8 px-8 py-3 bg-[#020617]/60 backdrop-blur-md border border-white/5 rounded-full shadow-[0_0_20px_rgba(0,0,0,0.8)]"
+      >
+        <p class="text-slate-400 text-lg font-light tracking-wide text-center">
+          سحب عشوائي على جوائز قيمة لنزلاء الفندق
+        </p>
+      </div>
+
+      <!-- أزرار التحكم -->
+      <div class="mt-8">
         <AppButton
           v-if="!isWinnerDeclared"
           size="xl"
-          class="px-12 py-6 text-2xl shadow-[0_0_50px_rgba(234,179,8,0.3)] hover:scale-105 transition-transform"
+          class="px-14 py-5 text-2xl font-bold tracking-wider bg-gradient-to-r from-blue-700 to-blue-600 border border-blue-500/30 shadow-[0_0_40px_rgba(37,99,235,0.3)] hover:shadow-[0_0_60px_rgba(37,99,235,0.6)] hover:scale-105 transition-all duration-300 rounded-2xl"
           :loading="isDrawing"
           @click="startLotteryDraw"
         >
           {{ isDrawing ? 'جاري السحب...' : 'إبـدأ السـحب الآن' }}
         </AppButton>
 
-        <AppButton v-else variant="secondary" size="lg" @click="resetDraw"> سحب جديد </AppButton>
+        <AppButton
+          v-else
+          variant="secondary"
+          size="lg"
+          class="px-12 py-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 shadow-[0_0_20px_rgba(255,255,255,0.05)] rounded-2xl transition-all"
+          @click="resetDraw"
+        >
+          سحب جديد
+        </AppButton>
       </div>
     </main>
 
-    <!-- قطعة الليغو 3: السجل الجانبى للفائزين -->
+    <!-- قطعة الليغو 3: السجل الجانبي للفائزين -->
     <WinnersSidebar :recent-winners="sessionWinners" />
 
     <!-- قطعة الليغو 4: شاشة الاحتفال الكبرى -->
@@ -47,11 +56,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useLotteryStore } from '@/stores/lottery.store'
+import { useClientStore } from '@/stores/client.store'
 import { useToast } from 'vue-toastification'
 
-// استيراد قطع الليغو (سنقوم ببرمجتها في الردود القادمة)
 import LotteryBackground from './components/LotteryBackground.vue'
 import LotterySlotMachine from './components/LotterySlotMachine.vue'
 import WinnerDisplay from './components/WinnerDisplay.vue'
@@ -59,27 +68,33 @@ import WinnersSidebar from './components/WinnersSidebar.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 
 const lotteryStore = useLotteryStore()
+const clientStore = useClientStore()
 const toast = useToast()
 
+const slotMachine = ref(null)
 const isDrawing = ref(false)
 const isWinnerDeclared = ref(false)
 const winner = ref(null)
 const sessionWinners = ref([])
 
-// دالة بدء السحب
+onMounted(async () => {
+  try {
+    await clientStore.fetchClients(1)
+    await lotteryStore.fetchDraws(1)
+    sessionWinners.value = [...lotteryStore.draws]
+  } catch (error) {
+    console.error('Failed to load initial data:', error)
+  }
+})
+
 const startLotteryDraw = async () => {
   if (isDrawing.value) return
 
   try {
-    isDrawing.value = true
     isWinnerDeclared.value = false
-
-    // 1. طلب الفائز من الباك إند (الحقيقة تأتي من السيرفر أولاً)
     const result = await lotteryStore.conductDraw()
     winner.value = result
-
-    // 2. تفعيل أنيميشن الروليت في قطعة الليغو المخصصة
-    // سنقوم بمخاطبة المكون "SlotMachine" لبدء الدوران
+    isDrawing.value = true
   } catch (error) {
     const msg = error.response?.data?.message || 'فشل الاتصال بالسيرفر'
     toast.error(msg)
@@ -87,15 +102,17 @@ const startLotteryDraw = async () => {
   }
 }
 
-// يتم استدعاؤها عندما ينتهي الأنيميشن بصرياً ويقف عند الفائز
 const handleAnimationComplete = () => {
   isDrawing.value = false
   isWinnerDeclared.value = true
-  sessionWinners.value.unshift(winner.value) // إضافة الفائز لسجل الجلسة
+  if (winner.value) {
+    sessionWinners.value.unshift(winner.value)
+  }
 }
 
 const resetDraw = () => {
   isWinnerDeclared.value = false
   winner.value = null
+  isDrawing.value = false
 }
 </script>

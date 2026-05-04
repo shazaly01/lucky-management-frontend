@@ -1,3 +1,4 @@
+//src\stores\client.store.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import clientService from '@/services/client.service'

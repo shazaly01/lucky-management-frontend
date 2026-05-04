@@ -57,6 +57,7 @@
                   v-for="child in item.children"
                   :key="child.name"
                   :to="{ name: child.routeName }"
+                  :target="child.target || '_self'"
                   class="nav-link nav-sub-link"
                   @click="$emit('close-sidebar')"
                 >
@@ -132,6 +133,7 @@ const allNavLinks = shallowRef([
         name: 'شاشة القرعة',
         routeName: 'LotteryScreen',
         permission: 'lottery_draw.create',
+        target: '_blank',
       },
       {
         name: 'سجل الفائزين',

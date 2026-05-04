@@ -3,9 +3,12 @@ import apiClient from './apiClient'
 const resource = '/lottery-draws'
 
 export default {
-  // جلب سجل السحوبات السابقة مع دعم التقسيم لصفحات
-  get(page = 1) {
-    return apiClient.get(`${resource}?page=${page}`)
+  /**
+   * جلب سجل السحوبات مع دعم الفلترة (التاريخ، الصفحة، إلخ)
+   * @param {Object} params - كائن يحتوي على { page, date, per_page }
+   */
+  get(params = {}) {
+    return apiClient.get(resource, { params })
   },
 
   // إجراء سحب جديد أوتوماتيكي
