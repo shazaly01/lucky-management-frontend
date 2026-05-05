@@ -2,11 +2,56 @@
 <template>
   <div>
     <!-- رأس الصفحة -->
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
       <h1 class="text-2xl font-bold text-text-primary">إدارة النزلاء</h1>
-      <AppButton v-if="can('client.create')" @click="openClientModal()">
-        إضافة نزيل جديد
-      </AppButton>
+
+      <!-- مجموعة أزرار التحكم والوصول السريع -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- 1. زر رابط التسجيل المباشر (الأونلاين) للاختبار -->
+        <a
+          href="/guest-register"
+          target="_blank"
+          title="فتح شاشة تسجيل الزوار في نافذة جديدة"
+          class="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-500 hover:bg-amber-500/20 border border-amber-500/20 rounded-xl transition-all font-medium text-sm"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            />
+          </svg>
+          <span>رابط التسجيل الأونلاين</span>
+        </a>
+
+        <!-- 2. زر شاشة عرض الباركود (للمعرض) -->
+        <router-link
+          to="/qr-display"
+          target="_blank"
+          title="عرض شاشة الباركود الخاصة بالمعرض"
+          class="flex items-center gap-2 px-4 py-2 bg-sky-500/10 text-sky-500 hover:bg-sky-500/20 border border-sky-500/20 rounded-xl transition-all font-medium text-sm"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+            />
+          </svg>
+          <span>شاشة الباركود</span>
+        </router-link>
+
+        <!-- 3. زر الإضافة اليدوي (موجود سابقاً) -->
+        <AppButton
+          v-if="can('client.create')"
+          @click="openClientModal()"
+          class="!rounded-xl text-sm"
+        >
+          إضافة نزيل يدوي
+        </AppButton>
+      </div>
     </div>
 
     <!-- قطعة الجدول -->

@@ -1,6 +1,7 @@
 import apiClient from './apiClient'
 
 const resource = '/clients'
+const publicResource = '/public-clients' // المسار العام الجديد
 
 export default {
   // جلب جميع العملاء (مع دعم التقسيم لصفحات - Pagination)
@@ -13,13 +14,18 @@ export default {
     return apiClient.get(`${resource}/${id}`)
   },
 
-  // إضافة عميل جديد (ندعم رفع الصورة عبر multipart/form-data)
+  // إضافة عميل جديد من داخل لوحة التحكم (ندعم رفع الصورة عبر multipart/form-data)
   create(payload) {
     return apiClient.post(resource, payload, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
+  },
+
+  // إضافة عميل جديد من خارج لوحة التحكم (عام/للزوار) - لا يحتاج لرفع صور هنا
+  createPublic(payload) {
+    return apiClient.post(publicResource, payload)
   },
 
   // تحديث بيانات عميل

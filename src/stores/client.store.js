@@ -1,4 +1,3 @@
-//src\stores\client.store.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import clientService from '@/services/client.service'
@@ -46,7 +45,7 @@ export const useClientStore = defineStore('client', () => {
     }
   }
 
-  // إضافة عميل جديد
+  // إضافة عميل جديد (من داخل لوحة التحكم)
   async function createClient(payload) {
     loading.value = true
     error.value = null
@@ -55,6 +54,21 @@ export const useClientStore = defineStore('client', () => {
       await fetchClients() // تحديث القائمة للعودة للصفحة الأولى ورؤية الإضافة
     } catch (err) {
       error.value = err.response?.data?.message || 'فشل في إضافة العميل.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // إضافة عميل جديد (من شاشة التسجيل الخارجية للزوار)
+  async function createPublicClient(payload) {
+    loading.value = true
+    error.value = null
+    try {
+      await clientService.createPublic(payload)
+      // ملاحظة: لا نستدعي fetchClients هنا لأن الزائر ليس لديه صلاحيات الإدارة ولا يحتاج للقائمة
+    } catch (err) {
+      error.value = err.response?.data?.message || 'فشل في إرسال طلب التسجيل.'
       throw err
     } finally {
       loading.value = false
@@ -100,6 +114,7 @@ export const useClientStore = defineStore('client', () => {
     fetchClients,
     fetchClient,
     createClient,
+    createPublicClient,
     updateClient,
     deleteClient,
   }

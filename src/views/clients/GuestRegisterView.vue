@@ -1,10 +1,9 @@
 <!--src\views\clients\GuestRegisterView.vue-->
 <template>
-  <!-- استخدمنا min-h-[100dvh] ليكون متوافقاً تماماً مع شاشات الجوال الحقيقية -->
   <div
-    class="relative min-h-[100dvh] w-full flex items-center justify-center overflow-hidden bg-[#070b19] font-sans selection:bg-amber-500/30"
+    class="relative min-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden bg-[#070b19] font-sans selection:bg-amber-500/30"
   >
-    <!-- ================= الخلفية الديناميكية (Ambient Orbs) ================= -->
+    <!-- ================= الخلفية الديناميكية ================= -->
     <div
       class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-amber-500/10 rounded-full blur-[80px] animate-orb-float pointer-events-none"
     ></div>
@@ -14,30 +13,87 @@
     <div
       class="absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse-slow pointer-events-none"
     ></div>
-
-    <!-- شبكة خفيفة لإعطاء ملمس عصري (Texture) -->
     <div
       class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none"
     ></div>
 
+    <!-- ================= منطقة الشعارات العلوية ================= -->
+    <div
+      class="relative z-20 flex items-center justify-center gap-4 sm:gap-8 w-full max-w-[400px] px-4 mt-6 mb-4"
+    >
+      <div
+        class="absolute inset-0 bg-amber-500/10 blur-[50px] rounded-full animate-glow pointer-events-none"
+      ></div>
+
+      <img
+        src="/RightLogo.png"
+        alt="Sponsor Right"
+        class="relative z-20 w-16 sm:w-20 h-auto drop-shadow-[0_0_8px_rgba(251,191,36,0.3)] animate-float animation-delay-1000"
+      />
+      <img
+        src="/MainLogo.png"
+        alt="Event Logo"
+        class="relative z-20 w-28 sm:w-36 h-auto drop-shadow-[0_0_12px_rgba(251,191,36,0.5)] animate-float"
+      />
+      <img
+        src="/LeftLogo.png"
+        alt="Sponsor Left"
+        class="relative z-20 w-12 sm:w-16 h-auto drop-shadow-[0_0_8px_rgba(251,191,36,0.3)] animate-float animation-delay-2000"
+      />
+    </div>
+
     <!-- ================= حاوية المحتوى الرئيسية ================= -->
-    <div class="relative z-10 w-full max-w-[400px] px-5 py-8 animate-slide-up-enter">
+    <div
+      class="relative z-10 w-full max-w-[400px] px-5 pb-8 flex-1 flex flex-col justify-center animate-slide-up-enter"
+    >
       <Transition name="switch" mode="out-in">
-        <!-- ================= حالة النجاح (شكر وتسجيل) ================= -->
+        <!-- ================= 1. حالة مسجل مسبقاً (البصمة الرقمية) ================= -->
         <div
-          v-if="isSuccess"
-          class="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8 sm:p-10 text-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
+          v-if="hasRegisteredBefore"
+          class="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8 text-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
         >
-          <!-- لمعان خلفي لحالة النجاح -->
+          <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-sky-500/20 to-transparent pointer-events-none"
+          ></div>
+
+          <div class="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+            <div class="absolute inset-0 bg-sky-500/20 rounded-full animate-ping-slow"></div>
+            <!-- أيقونة درع/حماية -->
+            <svg
+              class="w-14 h-14 text-sky-400 z-10 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+          </div>
+
+          <h2 class="text-2xl font-extrabold text-white mb-2 tracking-wide">مسجل مسبقاً</h2>
+          <p class="text-slate-300 text-sm leading-relaxed mb-2">
+            لقد تم تسجيل بياناتك من هذا الجهاز بالفعل ودخولك في السحب.
+          </p>
+          <p class="text-amber-400 text-sm font-bold">نتمنى لك حظاً وفيراً!</p>
+        </div>
+
+        <!-- ================= 2. حالة النجاح (اللحظية بعد التسجيل) ================= -->
+        <div
+          v-else-if="isSuccess"
+          class="relative bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8 text-center shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden"
+        >
           <div
             class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-emerald-500/20 to-transparent pointer-events-none"
           ></div>
 
-          <!-- أيقونة الصح المتحركة -->
-          <div class="relative w-24 h-24 mx-auto mb-8 flex items-center justify-center">
+          <div class="relative w-20 h-20 mx-auto mb-6 flex items-center justify-center">
             <div class="absolute inset-0 bg-emerald-500/20 rounded-full animate-ping-slow"></div>
             <svg
-              class="w-20 h-20 text-emerald-400 z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+              class="w-16 h-16 text-emerald-400 z-10 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]"
               viewBox="0 0 52 52"
             >
               <circle
@@ -61,67 +117,34 @@
             </svg>
           </div>
 
-          <h2 class="text-3xl font-extrabold text-white mb-3 tracking-wide">تم بنجاح!</h2>
-          <p class="text-slate-300 text-lg leading-relaxed mb-8">
+          <h2 class="text-2xl font-extrabold text-white mb-2 tracking-wide">تم بنجاح!</h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
             أهلاً بك <span class="text-amber-400 font-bold">{{ form.name }}</span
             ><br />
             لقد تم إدخالك في السحب الكبير.<br />نتمنى لك حظاً وفيراً!
           </p>
-
-          <button
-            @click="resetForm"
-            class="w-full py-4 px-6 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-2xl font-medium transition-all active:scale-95 flex items-center justify-center gap-2"
-          >
-            <span>تسجيل نزيل آخر</span>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-              />
-            </svg>
-          </button>
+          <!-- تم إزالة زر التصفير (Reset) لمنع التسجيل المتكرر -->
         </div>
 
-        <!-- ================= حالة الفورم (الواجهة الافتراضية) ================= -->
+        <!-- ================= 3. حالة الفورم (الواجهة الافتراضية) ================= -->
         <div
           v-else
-          class="relative bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 sm:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+          class="relative bg-white/[0.02] backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
         >
-          <!-- تصميم الشعار الترحيبي -->
-          <div class="text-center mb-10">
-            <div
-              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500/20 to-amber-300/5 border border-amber-500/30 mb-4 shadow-[0_0_20px_rgba(251,191,36,0.2)]"
-            >
-              <svg
-                class="w-8 h-8 text-amber-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                />
-              </svg>
-            </div>
-            <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-wide mb-2">
+          <div class="text-center mb-8">
+            <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-wide mb-1.5">
               التسجيل في السحب
             </h1>
-            <p class="text-slate-400 text-sm">يرجى إدخال بياناتك للدخول في القرعة</p>
+            <p class="text-slate-400 text-xs sm:text-sm">يرجى إدخال بياناتك للدخول في القرعة</p>
           </div>
 
-          <!-- رسالة الخطأ المنبثقة -->
           <Transition name="fade">
             <div
               v-if="errorMessage"
-              class="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-3"
+              class="mb-5 p-3.5 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start gap-2.5"
             >
               <svg
-                class="w-5 h-5 text-red-400 shrink-0 mt-0.5"
+                class="w-4 h-4 text-red-400 shrink-0 mt-0.5"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -133,19 +156,18 @@
                   d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
-              <p class="text-red-300 text-sm leading-relaxed">{{ errorMessage }}</p>
+              <p class="text-red-300 text-xs leading-relaxed">{{ errorMessage }}</p>
             </div>
           </Transition>
 
-          <form @submit.prevent="submitForm" class="space-y-5">
-            <!-- حقل الاسم (تصميم مخصص للموبايل) -->
+          <form @submit.prevent="submitForm" class="space-y-4">
+            <!-- حقل الاسم -->
             <div class="relative group">
-              <!-- تأثير التوهج الخلفي للحقل عند التركيز -->
               <div
-                class="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-sky-500 rounded-2xl blur opacity-0 group-focus-within:opacity-30 transition duration-500"
+                class="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-sky-500 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition duration-500"
               ></div>
               <div
-                class="relative bg-[#0f152a] rounded-2xl border border-white/10 group-focus-within:border-amber-500/50 transition-colors"
+                class="relative bg-[#0f152a] rounded-xl border border-white/10 group-focus-within:border-amber-500/50 transition-colors"
               >
                 <input
                   v-model="form.name"
@@ -153,11 +175,11 @@
                   id="name"
                   required
                   placeholder=" "
-                  class="block w-full px-5 pb-3 pt-7 bg-transparent text-white text-base focus:outline-none peer dir-rtl"
+                  class="autofill-fix block w-full px-4 pb-2 pt-5 bg-transparent text-white text-sm focus:outline-none peer dir-rtl"
                 />
                 <label
                   for="name"
-                  class="absolute text-slate-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[right] right-5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-amber-400"
+                  class="absolute text-slate-400 duration-300 transform -translate-y-2.5 scale-75 top-3 z-10 origin-[right] right-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2.5 peer-focus:text-amber-400 text-sm"
                 >
                   الاسم الرباعي
                 </label>
@@ -167,14 +189,13 @@
             <!-- حقل رقم الهاتف -->
             <div class="relative group">
               <div
-                class="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-sky-500 rounded-2xl blur opacity-0 group-focus-within:opacity-30 transition duration-500"
+                class="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-sky-500 rounded-xl blur opacity-0 group-focus-within:opacity-30 transition duration-500"
               ></div>
               <div
-                class="relative bg-[#0f152a] rounded-2xl border border-white/10 group-focus-within:border-amber-500/50 transition-colors flex items-center"
+                class="relative bg-[#0f152a] rounded-xl border border-white/10 group-focus-within:border-amber-500/50 transition-colors flex items-center"
               >
-                <!-- أيقونة الهاتف -->
-                <div class="pl-4 pr-3 text-slate-500 border-r border-white/10">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="pl-3 pr-2.5 text-slate-500 border-r border-white/10">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -190,12 +211,12 @@
                     id="phone"
                     required
                     placeholder=" "
-                    class="block w-full px-4 pb-3 pt-7 bg-transparent text-white text-base focus:outline-none peer dir-ltr text-left font-mono"
+                    class="autofill-fix block w-full px-3 pb-2 pt-5 bg-transparent text-white text-sm focus:outline-none peer dir-ltr text-left font-mono"
                     dir="ltr"
                   />
                   <label
                     for="phone"
-                    class="absolute text-slate-400 duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[left] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3 peer-focus:text-amber-400"
+                    class="absolute text-slate-400 duration-300 transform -translate-y-2.5 scale-75 top-3 z-10 origin-[left] left-3 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-2.5 peer-focus:text-amber-400 text-sm"
                   >
                     رقم الهاتف
                   </label>
@@ -203,28 +224,24 @@
               </div>
             </div>
 
-            <!-- زر الإرسال مع تأثير اللمعان -->
             <button
               type="submit"
               :disabled="isLoading"
-              class="relative w-full overflow-hidden rounded-2xl mt-6 group disabled:opacity-70 disabled:cursor-not-allowed"
+              class="relative w-full overflow-hidden rounded-xl mt-4 group disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <!-- خلفية الزر -->
               <div
                 class="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-500 transition-all duration-300 group-hover:scale-[1.02]"
               ></div>
-
-              <!-- لمعة الزر المتحركة -->
               <div
                 class="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"
               ></div>
 
               <div
-                class="relative flex items-center justify-center gap-2 py-4 px-6 text-white font-bold text-lg shadow-[0_0_20px_rgba(251,191,36,0.3)]"
+                class="relative flex items-center justify-center gap-2 py-3.5 px-6 text-white font-bold text-[15px] shadow-[0_0_20px_rgba(251,191,36,0.3)]"
               >
                 <svg
                   v-if="isLoading"
-                  class="animate-spin h-5 w-5 text-white"
+                  class="animate-spin h-4 w-4 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -254,8 +271,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue'
+import { useClientStore } from '@/stores/client.store'
+
+const clientStore = useClientStore()
 
 const form = ref({
   name: '',
@@ -266,17 +285,32 @@ const isLoading = ref(false)
 const isSuccess = ref(false)
 const errorMessage = ref('')
 
+// المتغير الجديد الخاص بالبصمة الرقمية
+const hasRegisteredBefore = ref(false)
+
+// التحقق من البصمة بمجرد فتح الصفحة
+onMounted(() => {
+  const isRegistered = localStorage.getItem('lottery_registered_v1')
+  if (isRegistered === 'true') {
+    hasRegisteredBefore.value = true
+  }
+})
+
 const submitForm = async () => {
   isLoading.value = true
   errorMessage.value = ''
 
   try {
-    await axios.post('/api/public-clients', {
+    await clientStore.createPublicClient({
       name: form.value.name,
       phone: form.value.phone,
     })
 
+    // إظهار شاشة النجاح
     isSuccess.value = true
+
+    // زراعة البصمة الرقمية في المتصفح لمنع التسجيل مرة أخرى
+    localStorage.setItem('lottery_registered_v1', 'true')
   } catch (error) {
     if (error.response?.data?.errors) {
       const firstErrorKey = Object.keys(error.response.data.errors)[0]
@@ -284,23 +318,15 @@ const submitForm = async () => {
     } else if (error.response?.data?.message) {
       errorMessage.value = error.response.data.message
     } else {
-      errorMessage.value = 'حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'
+      errorMessage.value = clientStore.error || 'حدث خطأ في الاتصال. يرجى المحاولة مرة أخرى.'
     }
   } finally {
     isLoading.value = false
   }
 }
-
-const resetForm = () => {
-  form.value.name = ''
-  form.value.phone = ''
-  isSuccess.value = false
-  errorMessage.value = ''
-}
 </script>
 
 <style scoped>
-/* ================= اتجاه النصوص ================= */
 .dir-rtl {
   direction: rtl;
   text-align: right;
@@ -310,18 +336,26 @@ const resetForm = () => {
   text-align: left;
 }
 
-/* ================= حركات الانتقال (Transitions) ================= */
+.autofill-fix:-webkit-autofill,
+.autofill-fix:-webkit-autofill:hover,
+.autofill-fix:-webkit-autofill:focus,
+.autofill-fix:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #0f152a inset !important;
+  -webkit-text-fill-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .switch-enter-active,
 .switch-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .switch-enter-from {
   opacity: 0;
-  transform: translateY(20px) scale(0.95);
+  transform: translateY(15px) scale(0.97);
 }
 .switch-leave-to {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-15px) scale(0.97);
 }
 
 .fade-enter-active,
@@ -333,16 +367,13 @@ const resetForm = () => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-5px);
 }
 
-/* ================= الحركات المخصصة (Keyframes) ================= */
-
-/* دخول الفورم عند فتح الرابط */
 @keyframes slideUpEnter {
   0% {
     opacity: 0;
-    transform: translateY(50px) scale(0.9);
+    transform: translateY(40px) scale(0.95);
   }
   100% {
     opacity: 1;
@@ -350,20 +381,19 @@ const resetForm = () => {
   }
 }
 .animate-slide-up-enter {
-  animation: slideUpEnter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUpEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* حركة الكرات المضيئة في الخلفية */
 @keyframes orbFloat {
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
   33% {
-    transform: translate(30px, -50px) scale(1.1);
+    transform: translate(20px, -30px) scale(1.05);
   }
   66% {
-    transform: translate(-20px, 20px) scale(0.9);
+    transform: translate(-15px, 15px) scale(0.95);
   }
 }
 .animate-orb-float {
@@ -377,7 +407,7 @@ const resetForm = () => {
     transform: scale(1) translate(-50%, -50%);
   }
   50% {
-    opacity: 0.6;
+    opacity: 0.5;
     transform: scale(1.05) translate(-50%, -50%);
   }
 }
@@ -385,7 +415,6 @@ const resetForm = () => {
   animation: pulseSlow 8s ease-in-out infinite;
 }
 
-/* لمعة الزر */
 @keyframes shimmer {
   0% {
     transform: translateX(-150%) skewX(-12deg);
@@ -398,18 +427,44 @@ const resetForm = () => {
   animation: shimmer 3s infinite;
 }
 
-/* ================= رسم علامة الصح لحالة النجاح ================= */
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+.animate-glow {
+  animation: glow 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
 .circle-animation {
   stroke-dasharray: 160;
   stroke-dashoffset: 160;
-  animation: drawCircle 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  animation: drawCircle 0.5s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 .check-animation {
   stroke-dasharray: 50;
   stroke-dashoffset: 50;
-  animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+  animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.4s forwards;
 }
-
 @keyframes drawCircle {
   to {
     stroke-dashoffset: 0;
@@ -427,7 +482,7 @@ const resetForm = () => {
     opacity: 0.8;
   }
   100% {
-    transform: scale(1.5);
+    transform: scale(1.4);
     opacity: 0;
   }
 }
@@ -435,6 +490,9 @@ const resetForm = () => {
   animation: pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
 .animation-delay-2000 {
   animation-delay: 2s;
 }
