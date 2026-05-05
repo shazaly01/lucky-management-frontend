@@ -5,19 +5,21 @@ import { useAuthStore } from '@/stores/authStore'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import AuthLayout from '@/components/layout/AuthLayout.vue'
 
-// --- استيراد الصفحات الأساسية (تم تحويل DashboardView ليكون ديناميكياً لتجنب خطأ ENOENT) ---
+// --- استيراد الصفحات الأساسية ---
 import LoginView from '@/views/LoginView.vue'
 
-// --- استيراد صفحات نظام الفندق والقرعة ديناميكياً (Lazy Loading) ---
+// --- استيراد صفحات النظام ديناميكياً (Lazy Loading) ---
 const DashboardView = () => import('@/views/dashboard/DashboardView.vue')
 const UsersList = () => import('@/views/users/UsersList.vue')
 const RolesList = () => import('@/views/roles/RolesList.vue')
 const BackupsList = () => import('@/views/settings/BackupsList.vue')
-
-// الكيانات الجديدة للنظام
 const ClientsList = () => import('@/views/clients/ClientsList.vue')
-const LotteryView = () => import('@/views/lottery/LotteryView.vue') // شاشة القرعة الكاملة
-const LotteryIndex = () => import('@/views/lottery/LotteryIndex.vue') // سجل الفائزين (المسار المفقود سابقاً)
+const LotteryView = () => import('@/views/lottery/LotteryView.vue')
+const LotteryIndex = () => import('@/views/lottery/LotteryIndex.vue')
+
+// --- الشاشات العامة الجديدة (لا تتطلب تسجيل دخول) ---
+const GuestRegisterView = () => import('@/views/clients/GuestRegisterView.vue')
+const QrDisplayView = () => import('@/views/clients/QrDisplayView.vue')
 
 const routes = [
   // --- 1. المسارات العامة (Auth) ---
@@ -30,7 +32,21 @@ const routes = [
     ],
   },
 
-  // --- 2. شاشة القرعة (Full Screen) ---
+  // --- 2. الشاشات العامة الخارجية (التسجيل والـ QR) ---
+  {
+    path: '/guest-register',
+    name: 'GuestRegister',
+    component: GuestRegisterView,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/qr-display',
+    name: 'QrDisplay',
+    component: QrDisplayView,
+    meta: { requiresAuth: false },
+  },
+
+  // --- 3. شاشة القرعة (Full Screen) ---
   {
     path: '/lottery-screen',
     name: 'LotteryScreen',
@@ -41,7 +57,7 @@ const routes = [
     },
   },
 
-  // --- 3. المسارات الإدارية (داخل AppLayout) ---
+  // --- 4. المسارات الإدارية (داخل AppLayout) ---
   {
     path: '/app',
     component: AppLayout,
@@ -53,8 +69,6 @@ const routes = [
         component: DashboardView,
         meta: { permission: 'dashboard.view' },
       },
-
-      // إدارة المستخدمين
       {
         path: 'users',
         name: 'UsersList',
@@ -73,24 +87,18 @@ const routes = [
         component: BackupsList,
         meta: { permission: 'backup.view' },
       },
-
-      // إدارة النزلاء (Clients)
       {
         path: 'clients',
         name: 'ClientsList',
         component: ClientsList,
         meta: { permission: 'client.view' },
       },
-
-      // نظام القرعة (داخل التخطيط الإداري لعرض السجل)
       {
         path: 'lottery-log',
         name: 'LotteryIndex',
         component: LotteryIndex,
         meta: { permission: 'lottery_draw.view' },
       },
-
-      // إعادة توجيه المسار الرئيسي للتطبيق
       { path: '', redirect: '/app/dashboard' },
     ],
   },

@@ -94,6 +94,7 @@ import {
   ChevronDownIcon,
   UserGroupIcon, // أيقونة للنزلاء
   TrophyIcon, // أيقونة للقرعة
+  QrCodeIcon, // أيقونة شاشة الباركود
 } from '@heroicons/vue/24/outline'
 
 defineEmits(['close-sidebar'])
@@ -119,6 +120,12 @@ const allNavLinks = shallowRef([
         name: 'قائمة النزلاء',
         routeName: 'ClientsList',
         permission: 'client.view',
+      },
+      {
+        name: 'شاشة الباركود',
+        routeName: 'QrDisplay',
+        permission: 'client.view', // تظهر لمن لديه صلاحيات رؤية النزلاء
+        target: '_blank', // لفتحها في نافذة مستقلة للمعرض
       },
       // يمكن إضافة "الحجوزات" أو "الغرف" هنا مستقبلاً
     ],

@@ -1,3 +1,4 @@
+<!--src\views\clients\ClientModal.vue-->
 <template>
   <Transition
     enter-active-class="transition ease-out duration-200"

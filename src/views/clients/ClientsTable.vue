@@ -1,3 +1,4 @@
+<!---src\views\clients\ClientsTable.vue-->
 <template>
   <div>
     <AppTable :headers="headers" :items="clients" :is-loading="loading" :row-clickable="false">

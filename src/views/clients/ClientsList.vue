@@ -1,3 +1,4 @@
+<!--src\views\clients\ClientsList.vue-->
 <template>
   <div>
     <!-- رأس الصفحة -->
